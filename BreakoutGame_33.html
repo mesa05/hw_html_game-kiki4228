@@ -17,10 +17,11 @@
 		var paddleY = 460;
 
 		var paddleWidth = 100;
-		var paddleHeight = 15;
+		var paddleHeight = 5;
 
 		var paddleDeltaX = 0;
 		var paddleDeltaY = 0;
+		
 
 		function drawPaddle() {
 			context.fillRect(paddleX, paddleY, paddleWidth, paddleHeight);
@@ -129,6 +130,7 @@
             if (ballY + ballDeltaY + ballRadius > canvas.height){
                 endGame();
             }
+            
             // If side of ball touches either side of the wall then reverse X direction
                 //left of ball moves too far left
             if ((ballX + ballDeltaX - ballRadius < 0) ||
@@ -142,7 +144,7 @@
             }
 
             // if bottom of ball reaches the top of paddle,
-            if (ballY + ballDeltaY + ballRadius >= paddleY){
+            if (ballY + ballDeltaY + ballRadius > canvas.height){
                 // and it is positioned between the two ends of the paddle (is on top)
                 if (ballX + ballDeltaX >= paddleX && 
                     ballX + ballDeltaX <= paddleX + paddleWidth){
@@ -150,6 +152,7 @@
                     bouncingSound.play();
                 }
             }
+            
 
             // Move the ball
             ballX = ballX + ballDeltaX;
@@ -243,6 +246,10 @@
             
             drawPaddle();
             drawBall();
+            
+            drawLives();
+            
+            collisionDetection();
 			
 			/*
             context.clearRect(0,0,canvas.width,canvas.height);
@@ -300,16 +307,33 @@
                     paddleMove = 'NONE';
                 }
             }); 
+            document.addEventListener("mousemove", mouseMoveHandler, false);
         }
-
+        
+        var lives = 3;
+        function drawLives() {
+            context.font = "16px Arial";
+            context.fillStyle = "#0095DD";
+            context.fillText("Lives: "+lives, canvas.width-65, 490);
+        }
+        
+        function mouseMoveHandler(e) {
+            var relativeX = e.clientX - canvas.offsetLeft;
+            if(relativeX > 0 && relativeX < canvas.width) {
+                paddleX = relativeX - paddleWidth/2;
+            }
+        }
+        
 		function endGame() {
 			clearInterval(gameLoop);
 			context.fillText('The End!!!!', canvas.width / 2, canvas.height / 2);
 		}
 
 		startGame();
+		
 
 	});
+	
 </script>
 
 <style type="text/css">
